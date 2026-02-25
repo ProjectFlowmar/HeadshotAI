@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Your Photo — HeadshotAI Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#050505;--card:#0a0a0a;--elevated:#111;--border:#1a1a1a;--text:#fafafa;--muted:#888;--dim:#555;--accent:#6366f1;--green:#22c55e;--radius:16px; }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased;}
+    .container{max-width:520px;width:90%;padding:48px 40px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);text-align:center;}
+    h1{font-size:1.6rem;font-weight:800;margin-bottom:8px;}
+    .sub{color:var(--muted);font-size:0.9rem;margin-bottom:32px;}
+    .dropzone{border:2px dashed var(--border);border-radius:var(--radius);padding:48px 24px;cursor:pointer;transition:all 0.3s;margin-bottom:24px;position:relative;}
+    .dropzone:hover,.dropzone.dragover{border-color:var(--accent);background:rgba(99,102,241,0.05);}
+    .dropzone-icon{font-size:3rem;margin-bottom:12px;}
+    .dropzone-text{font-size:0.95rem;color:var(--muted);}
+    .dropzone-text strong{color:var(--accent);}
+    .dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+    .preview{margin-bottom:24px;display:none;}
+    .preview img{max-width:200px;max-height:200px;border-radius:12px;border:2px solid var(--border);}
+    .preview .name{font-size:0.8rem;color:var(--muted);margin-top:8px;}
+    .btn{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#6366f1,#7c3aed);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+    .btn:hover{opacity:0.9;transform:translateY(-1px);}
+    .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+    .tips{margin-top:32px;text-align:left;padding:20px;background:var(--elevated);border-radius:10px;}
+    .tips h3{font-size:0.85rem;font-weight:700;color:var(--accent);margin-bottom:12px;}
+    .tips ul{list-style:none;}
+    .tips li{font-size:0.8rem;color:var(--muted);padding:4px 0;display:flex;align-items:center;gap:8px;}
+    .tips li::before{content:'✓';color:var(--green);font-weight:700;}
+    .progress{display:none;margin-top:16px;}
+    .progress-bar{width:100%;height:6px;background:var(--elevated);border-radius:3px;overflow:hidden;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#ec4899);border-radius:3px;transition:width 0.5s;width:0%;}
+    .progress-text{font-size:0.8rem;color:var(--muted);margin-top:8px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📸 Upload Your Photo</h1>
+    <p class="sub">One clear, front-facing photo. We'll handle the rest.</p>
+
+    <div class="dropzone" id="dropzone">
+      <div class="dropzone-icon">📷</div>
+      <div class="dropzone-text">Drag & drop your photo here, or <strong>click to browse</strong></div>
+      <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="preview" id="preview">
+      <img id="previewImg" src="" alt="Preview">
+      <div class="name" id="fileName"></div>
+    </div>
+
+    <button class="btn" id="generateBtn" onclick="startGeneration()" disabled>Generate My Headshots →</button>
+
+    <div class="progress" id="progress">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">Uploading photo...</div>
+    </div>
+
+    <div class="tips">
+      <h3>📋 Photo Tips for Best Results</h3>
+      <ul>
+        <li>Front-facing, eyes looking at camera</li>
+        <li>Good lighting (natural light is best)</li>
+        <li>No sunglasses or hats</li>
+        <li>Neutral expression or slight smile</li>
+        <li>Plain background preferred</li>
+        <li>Smartphone selfie works perfectly</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const orderId = window.location.pathname.split('/').pop();
+    let selectedFile = null;
+
+    // Dropzone
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const previewImg = document.getElementById('previewImg');
+
+    fileInput.addEventListener('change', handleFile);
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('dragover'); if (e.dataTransfer.files[0]) handleFileObj(e.dataTransfer.files[0]); });
+
+    function handleFile(e) { if (e.target.files[0]) handleFileObj(e.target.files[0]); }
+    function handleFileObj(file) {
+      if (!file.type.startsWith('image/')) return alert('Please upload an image file');
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => { previewImg.src = e.target.result; preview.style.display = 'block'; };
+      reader.readAsDataURL(file);
+      document.getElementById('fileName').textContent = file.name;
+      document.getElementById('generateBtn').disabled = false;
+      dropzone.style.display = 'none';
+    }
+
+    async function startGeneration() {
+      if (!selectedFile) return;
+      const btn = document.getElementById('generateBtn');
+      const progress = document.getElementById('progress');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+      progress.style.display = 'block';
+      progressFill.style.width = '10%';
+      progressText.textContent = 'Uploading photo...';
+
+      const formData = new FormData();
+      formData.append('selfie', selectedFile);
+
+      try {
+        const res = await fetch(`/api/upload/${orderId}`, { method: 'POST', body: formData });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error);
+
+        progressFill.style.width = '30%';
+        progressText.textContent = 'AI is generating your headshots... This takes 3-8 minutes.';
+
+        // Poll for completion
+        pollResults();
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Generate My Headshots →';
+        progress.style.display = 'none';
+        alert('Error: ' + err.message);
+      }
+    }
+
+    async function pollResults() {
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      let pct = 30;
+
+      const interval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/order/${orderId}`);
+          const data = await res.json();
+
+          if (data.status === 'completed') {
+            clearInterval(interval);
+            progressFill.style.width = '100%';
+            progressText.textContent = `Done! ${data.results.length} headshots generated.`;
+            setTimeout(() => { window.location.href = `/results/${orderId}`; }, 1000);
+          } else if (data.status === 'error') {
+            clearInterval(interval);
+            progressText.textContent = 'Error: ' + (data.error || 'Generation failed');
+            progressFill.style.background = '#f85149';
+          } else {
+            pct = Math.min(pct + 3, 90);
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `AI is generating your headshots... ${Math.floor(pct)}%`;
+          }
+        } catch(e) {}
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

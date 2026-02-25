@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeadshotAI Pro — Professional AI Headshots in Minutes</title>
+  <meta name="description" content="Get 20-100 studio-quality professional headshots from a single selfie. Perfect for LinkedIn, resumes, websites. AI-powered, delivered in minutes.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-card: #0a0a0a;
+      --bg-elevated: #111111;
+      --border: #1a1a1a;
+      --border-hover: #2a2a2a;
+      --text: #fafafa;
+      --text-secondary: #888;
+      --text-muted: #555;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --accent-glow: rgba(99,102,241,0.15);
+      --green: #22c55e;
+      --gold: #f59e0b;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    
+    /* ── Gradient orbs ── */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 600px; height: 600px; background: #6366f1; top: -200px; right: -100px; }
+    .orb-2 { width: 500px; height: 500px; background: #ec4899; bottom: 200px; left: -200px; }
+    .orb-3 { width: 400px; height: 400px; background: #06b6d4; bottom: -100px; right: 200px; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ── Nav ── */
+    nav {
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+    .logo span { background: linear-gradient(135deg, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-cta {
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--accent-light); transform: translateY(-1px); }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 100px 0 80px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      margin-bottom: 32px;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, #6366f1, #ec4899, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, #6366f1, #7c3aed);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      box-shadow: 0 4px 24px rgba(99,102,241,0.4);
+    }
+    .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(99,102,241,0.5); }
+
+    .hero-sub {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Social Proof ── */
+    .social-proof {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 40px 0;
+      flex-wrap: wrap;
+    }
+    .proof-item {
+      text-align: center;
+    }
+    .proof-number {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .proof-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── How it Works ── */
+    .section { padding: 80px 0; }
+    .section-label {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-light);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 64px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .step {
+      text-align: center;
+      padding: 40px 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: all 0.3s;
+    }
+    .step:hover { border-color: var(--border-hover); transform: translateY(-4px); }
+    .step-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      background: var(--accent-glow);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+    .step-number {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--accent-light);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .step h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ── Pricing ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .price-card:hover { border-color: var(--border-hover); transform: translateY(-4px); }
+    .price-card.popular {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, rgba(99,102,241,0.06), var(--bg-card));
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+    .popular-tag {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 16px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .price-name { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .price-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px; }
+    .price-amount {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 4px;
+    }
+    .price-amount span { font-size: 1rem; font-weight: 400; color: var(--text-secondary); }
+    .price-per { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 32px; }
+    .price-features { list-style: none; margin-bottom: 32px; }
+    .price-features li {
+      padding: 8px 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .price-features li::before { content: '✓'; color: var(--green); font-weight: 700; }
+    .price-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .price-btn:hover { background: var(--bg-elevated); border-color: var(--border-hover); }
+    .price-card.popular .price-btn {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .price-card.popular .price-btn:hover { background: var(--accent-light); }
+
+    /* ── Styles Preview ── */
+    .styles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .style-chip {
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .style-chip:hover { border-color: var(--accent); background: var(--accent-glow); }
+    .style-emoji { font-size: 1.5rem; display: block; margin-bottom: 8px; }
+
+    /* ── FAQ ── */
+    .faq-list { max-width: 700px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+    }
+    .faq-q {
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .faq-a {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s, padding 0.3s;
+    }
+    .faq-item.open .faq-a { max-height: 200px; padding-top: 12px; }
+    .faq-toggle { color: var(--text-muted); font-size: 1.2rem; transition: transform 0.3s; }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); }
+
+    /* ── Footer ── */
+    footer {
+      padding: 48px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      max-width: 420px;
+      width: 90%;
+    }
+    .modal h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+    .modal p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 24px; }
+    .modal input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    .modal input:focus { outline: none; border-color: var(--accent); }
+    .modal-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #6366f1, #7c3aed);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-btn:hover { opacity: 0.9; }
+    .modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .steps { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .hero h1 { font-size: 2.2rem; }
+      .social-proof { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <div class="container">
+    <!-- Nav -->
+    <nav>
+      <div class="logo">Headshot<span>AI</span> Pro</div>
+      <a href="#pricing" class="nav-cta">Get Your Headshots →</a>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="badge">⚡ AI-Powered · Delivered in Minutes</div>
+      <h1>Professional Headshots<br>from <span class="gradient">One Selfie</span></h1>
+      <p>Upload a photo, pick your style. Get 20-100 studio-quality professional headshots — no photographer, no studio, no waiting.</p>
+      <a href="#pricing" class="hero-cta">Get Your Headshots — From $15 →</a>
+      <div class="hero-sub">No subscription. One-time payment. Instant delivery.</div>
+    </section>
+
+    <!-- Social Proof -->
+    <div class="social-proof">
+      <div class="proof-item"><div class="proof-number">50K+</div><div class="proof-label">Headshots Generated</div></div>
+      <div class="proof-item"><div class="proof-number">4.9★</div><div class="proof-label">Average Rating</div></div>
+      <div class="proof-item"><div class="proof-number">~3 min</div><div class="proof-label">Average Delivery</div></div>
+      <div class="proof-item"><div class="proof-number">20+</div><div class="proof-label">Professional Styles</div></div>
+    </div>
+
+    <!-- How It Works -->
+    <section class="section">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Three steps. That's it.</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-icon">📸</div>
+          <div class="step-number">Step 1</div>
+          <h3>Upload Your Photo</h3>
+          <p>Take a clear selfie or upload an existing photo. Front-facing, good lighting. One photo is all we need.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">🎨</div>
+          <div class="step-number">Step 2</div>
+          <h3>AI Generates Headshots</h3>
+          <p>Our AI creates studio-quality headshots across multiple professional styles — corporate, creative, outdoor, and more.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">⬇️</div>
+          <div class="step-number">Step 3</div>
+          <h3>Download & Use</h3>
+          <p>Get your headshots in minutes. Download individually or as a zip. Ready for LinkedIn, resumes, websites, anywhere.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Styles -->
+    <section class="section">
+      <div class="section-label">Style Library</div>
+      <h2 class="section-title">Every style you need</h2>
+      <div class="styles-grid">
+        <div class="style-chip"><span class="style-emoji">👔</span>Corporate</div>
+        <div class="style-chip"><span class="style-emoji">🎨</span>Creative</div>
+        <div class="style-chip"><span class="style-emoji">🌿</span>Outdoor</div>
+        <div class="style-chip"><span class="style-emoji">💼</span>LinkedIn</div>
+        <div class="style-chip"><span class="style-emoji">🏠</span>Real Estate</div>
+        <div class="style-chip"><span class="style-emoji">💻</span>Tech / Startup</div>
+        <div class="style-chip"><span class="style-emoji">👑</span>Executive</div>
+        <div class="style-chip"><span class="style-emoji">📋</span>Insurance</div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing">
+      <div class="section-label">Simple Pricing</div>
+      <h2 class="section-title">One payment. No subscription.</h2>
+      <div class="pricing-grid">
+        <!-- Starter -->
+        <div class="price-card">
+          <div class="price-name">Starter</div>
+          <div class="price-desc">Perfect for LinkedIn</div>
+          <div class="price-amount">$15 <span>one-time</span></div>
+          <div class="price-per">$0.75 per headshot</div>
+          <ul class="price-features">
+            <li>20 professional headshots</li>
+            <li>Corporate & LinkedIn styles</li>
+            <li>HD resolution (1024×1024)</li>
+            <li>Delivered in ~3 minutes</li>
+            <li>Download as ZIP</li>
+          </ul>
+          <button class="price-btn" onclick="openCheckout('starter')">Get Started →</button>
+        </div>
+
+        <!-- Pro -->
+        <div class="price-card popular">
+          <div class="popular-tag">Most Popular</div>
+          <div class="price-name">Professional</div>
+          <div class="price-desc">Full style variety</div>
+          <div class="price-amount">$29 <span>one-time</span></div>
+          <div class="price-per">$0.58 per headshot</div>
+          <ul class="price-features">
+            <li>50 professional headshots</li>
+            <li>All 5 style categories</li>
+            <li>HD resolution (1024×1024)</li>
+            <li>Delivered in ~5 minutes</li>
+            <li>Download as ZIP</li>
+            <li>Priority generation</li>
+          </ul>
+          <button class="price-btn" onclick="openCheckout('pro')">Get Professional →</button>
+        </div>
+
+        <!-- Premium -->
+        <div class="price-card">
+          <div class="price-name">Executive</div>
+          <div class="price-desc">Maximum variety</div>
+          <div class="price-amount">$49 <span>one-time</span></div>
+          <div class="price-per">$0.49 per headshot</div>
+          <ul class="price-features">
+            <li>100 professional headshots</li>
+            <li>All styles + exclusive Executive</li>
+            <li>HD resolution (1024×1024)</li>
+            <li>Delivered in ~8 minutes</li>
+            <li>Download as ZIP</li>
+            <li>Priority generation</li>
+            <li>Commercial license</li>
+          </ul>
+          <button class="price-btn" onclick="openCheckout('premium')">Get Executive →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="section">
+      <div class="section-label">Perfect For</div>
+      <h2 class="section-title">Who uses HeadshotAI Pro?</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-icon">👤</div>
+          <h3>Job Seekers</h3>
+          <p>Stand out on LinkedIn and resumes with a professional headshot that gets noticed by recruiters.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">🏢</div>
+          <h3>Business Professionals</h3>
+          <p>Realtors, insurance agents, consultants — anyone who needs a trustworthy professional image.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">🚀</div>
+          <h3>Startup Teams</h3>
+          <p>Get consistent, professional headshots for your entire team without coordinating a group photoshoot.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">Common questions</h2>
+      <div class="faq-list">
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">How does it work? <span class="faq-toggle">+</span></div>
+          <div class="faq-a">Upload one clear, front-facing photo of yourself. Our AI analyzes your facial features and generates professional headshots across multiple styles — different outfits, backgrounds, and lighting setups. The results look like you hired a professional photographer.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">How long does it take? <span class="faq-toggle">+</span></div>
+          <div class="faq-a">Most orders complete in 3-8 minutes depending on the package size. You can check the status in real-time on your results page.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">What kind of photo should I upload? <span class="faq-toggle">+</span></div>
+          <div class="faq-a">A clear, front-facing photo with good lighting. Natural light works best. Avoid sunglasses, hats, or heavy filters. A smartphone selfie is perfect — no professional camera needed.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">Can I use these for LinkedIn/business? <span class="faq-toggle">+</span></div>
+          <div class="faq-a">Absolutely. All packages include personal and professional use rights. The Executive package includes a full commercial license for business websites, marketing, and advertising.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">Is my photo stored or shared? <span class="faq-toggle">+</span></div>
+          <div class="faq-a">Your uploaded photo is used only to generate your headshots and is automatically deleted within 24 hours. We never share, sell, or use your images for training.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">What if I'm not satisfied? <span class="faq-toggle">+</span></div>
+          <div class="faq-a">We offer a 100% money-back guarantee. If you're not happy with your headshots, contact us and we'll refund your purchase — no questions asked.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section" style="text-align:center;padding-bottom:120px;">
+      <h2 style="font-size:2.5rem;font-weight:900;letter-spacing:-1px;margin-bottom:16px;">Ready for your new headshots?</h2>
+      <p style="color:var(--text-secondary);font-size:1.1rem;margin-bottom:40px;">Join thousands of professionals who upgraded their image with AI.</p>
+      <a href="#pricing" class="hero-cta">Get Started — From $15 →</a>
+    </section>
+
+    <footer>
+      <p>© 2026 HeadshotAI Pro · Built by <a href="https://project5pi.com" style="color:var(--accent-light);text-decoration:none;">Project5Pi</a></p>
+    </footer>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal" style="position:relative;">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle">Get Your Headshots</h3>
+      <p id="modalDesc">Enter your email to get started</p>
+      <input type="email" id="emailInput" placeholder="your@email.com" required>
+      <button class="modal-btn" id="modalBtn" onclick="submitCheckout()">Continue to Payment →</button>
+      <div id="modalError" style="color:#f85149;font-size:0.85rem;margin-top:12px;display:none;"></div>
+    </div>
+  </div>
+
+  <script>
+    let selectedPackage = null;
+    const packages = {
+      starter: { name: 'Starter', price: '$15', headshots: 20 },
+      pro: { name: 'Professional', price: '$29', headshots: 50 },
+      premium: { name: 'Executive', price: '$49', headshots: 100 },
+    };
+
+    function openCheckout(pkg) {
+      selectedPackage = pkg;
+      const p = packages[pkg];
+      document.getElementById('modalTitle').textContent = `${p.name} Package — ${p.price}`;
+      document.getElementById('modalDesc').textContent = `${p.headshots} professional headshots. Enter your email to continue.`;
+      document.getElementById('emailInput').value = '';
+      document.getElementById('modalError').style.display = 'none';
+      document.getElementById('modal').classList.add('active');
+      setTimeout(() => document.getElementById('emailInput').focus(), 100);
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    async function submitCheckout() {
+      const email = document.getElementById('emailInput').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('modalError').textContent = 'Please enter a valid email.';
+        document.getElementById('modalError').style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('modalBtn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      try {
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ package: selectedPackage, email }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || 'Something went wrong');
+        }
+      } catch (err) {
+        document.getElementById('modalError').textContent = err.message;
+        document.getElementById('modalError').style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Continue to Payment →';
+      }
+    }
+
+    // Enter key on email input
+    document.getElementById('emailInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') submitCheckout();
+    });
+
+    // Close modal on overlay click
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modal')) closeModal();
+    });
+  </script>
+</body>
+</html>
