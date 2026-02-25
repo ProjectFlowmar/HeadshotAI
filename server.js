@@ -236,6 +236,134 @@ app.get('/api/admin/stats', (req, res) => {
 });
 
 // ============================================================
+// API: Print & Ship (Prodigi)
+// ============================================================
+
+app.post('/api/print-order', async (req, res) => {
+  const { orderId, imageUrl, productId, shipping } = req.body;
+  if (!orderId || !imageUrl || !productId || !shipping) {
+    return res.status(400).json({ error: 'orderId, imageUrl, productId, and shipping required' });
+  }
+
+  const product = config.printProducts[productId];
+  if (!product) return res.status(400).json({ error: 'Invalid product' });
+
+  const order = storage.getOrder(orderId);
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+
+  const totalPrice = product.price + product.shipping;
+
+  // If Stripe is configured, create a checkout session for the print
+  const s = getStripe();
+  if (s) {
+    try {
+      const printOrderId = uuid();
+      const session = await s.checkout.sessions.create({
+        payment_method_types: ['card'],
+        customer_email: order.email,
+        line_items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: product.name,
+              description: 'Museum-quality print shipped to your door',
+            },
+            unit_amount: product.price,
+          },
+          quantity: 1,
+        }, {
+          price_data: {
+            currency: 'usd',
+            product_data: { name: 'Shipping' },
+            unit_amount: product.shipping,
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        success_url: `${config.baseUrl}/results/${orderId}?print=success`,
+        cancel_url: `${config.baseUrl}/results/${orderId}?print=canceled`,
+        metadata: { printOrderId, originalOrderId: orderId, productId, imageUrl: imageUrl.substring(0, 400) },
+        shipping_address_collection: {
+          allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'ES', 'IT', 'NL', 'IE', 'CO', 'MX', 'BR'],
+        },
+      });
+
+      return res.json({ ok: true, url: session.url, printOrderId });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  // Dev mode — simulate
+  res.json({ ok: true, message: 'Print order simulated (Stripe not configured)', totalPrice: totalPrice / 100 });
+});
+
+// Submit order to Prodigi (called after Stripe payment for prints)
+async function submitProdigiOrder(imageUrl, productId, shippingAddress) {
+  const product = config.printProducts[productId];
+  if (!product) return null;
+
+  const prodigiEnv = process.env.PRODIGI_ENV === 'production' ? 'api' : 'api.sandbox';
+  const apiKey = process.env.PRODIGI_API_KEY;
+  if (!apiKey) { console.log('[Prodigi] No API key, skipping'); return null; }
+
+  try {
+    const response = await fetch(`https://${prodigiEnv}.prodigi.com/v4.0/Orders`, {
+      method: 'POST',
+      headers: {
+        'X-API-Key': apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        shippingMethod: 'standard',
+        recipient: {
+          name: shippingAddress.name,
+          address: {
+            line1: shippingAddress.line1,
+            line2: shippingAddress.line2 || '',
+            postalOrZipCode: shippingAddress.postal_code,
+            countryCode: shippingAddress.country,
+            townOrCity: shippingAddress.city,
+            stateOrCounty: shippingAddress.state || '',
+          },
+        },
+        items: [{
+          sku: product.prodigiSku,
+          copies: 1,
+          sizing: 'fillPrintArea',
+          assets: [{
+            printArea: 'default',
+            url: imageUrl,
+          }],
+        }],
+      }),
+    });
+
+    const data = await response.json();
+    console.log('[Prodigi] Order submitted:', data);
+    return data;
+  } catch (err) {
+    console.error('[Prodigi] Error:', err.message);
+    return null;
+  }
+}
+
+// ============================================================
+// API: Get print products
+// ============================================================
+
+app.get('/api/print-products', (req, res) => {
+  const products = Object.entries(config.printProducts).map(([id, p]) => ({
+    id,
+    name: p.name,
+    price: (p.price / 100).toFixed(2),
+    shipping: (p.shipping / 100).toFixed(2),
+    total: ((p.price + p.shipping) / 100).toFixed(2),
+  }));
+  res.json({ ok: true, products });
+});
+
+// ============================================================
 // Stripe Webhook
 // ============================================================
 

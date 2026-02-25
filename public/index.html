@@ -477,14 +477,26 @@
         <div class="style-chip"><span class="style-emoji">💻</span>Tech / Startup</div>
         <div class="style-chip"><span class="style-emoji">👑</span>Executive</div>
         <div class="style-chip"><span class="style-emoji">📋</span>Insurance</div>
+        <div class="style-chip"><span class="style-emoji">👑</span>Pet Royal</div>
+        <div class="style-chip"><span class="style-emoji">🚀</span>Pet Astronaut</div>
+        <div class="style-chip"><span class="style-emoji">🧙</span>Pet Wizard</div>
+        <div class="style-chip"><span class="style-emoji">👨‍🍳</span>Pet Chef</div>
       </div>
     </section>
 
-    <!-- Pricing -->
+    <!-- Pricing Toggle -->
     <section class="section" id="pricing">
       <div class="section-label">Simple Pricing</div>
       <h2 class="section-title">One payment. No subscription.</h2>
-      <div class="pricing-grid">
+      
+      <!-- Toggle -->
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:48px;">
+        <button class="filter-btn active" id="tabHuman" onclick="showTab('human')" style="padding:10px 28px;border-radius:100px;border:1px solid var(--border);background:var(--accent-glow);color:var(--accent-light);font-family:inherit;font-weight:700;font-size:0.9rem;cursor:pointer;">👤 Professional Headshots</button>
+        <button class="filter-btn" id="tabPet" onclick="showTab('pet')" style="padding:10px 28px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-weight:700;font-size:0.9rem;cursor:pointer;">🐾 Pet Portraits</button>
+      </div>
+
+      <!-- Human Pricing -->
+      <div id="humanPricing" class="pricing-grid">
         <!-- Starter -->
         <div class="price-card">
           <div class="price-name">Starter</div>
@@ -537,6 +549,77 @@
           <button class="price-btn" onclick="openCheckout('premium')">Get Executive →</button>
         </div>
       </div>
+
+      <!-- Pet Pricing -->
+      <div id="petPricing" class="pricing-grid" style="display:none;">
+        <!-- Pet Starter -->
+        <div class="price-card">
+          <div class="price-name">Pet Starter</div>
+          <div class="price-desc">Try it out</div>
+          <div class="price-amount">$12 <span>one-time</span></div>
+          <div class="price-per">$1.20 per portrait</div>
+          <ul class="price-features">
+            <li>10 AI pet portraits</li>
+            <li>Royal, Adventure, CEO & more</li>
+            <li>HD resolution (1024×1024)</li>
+            <li>Delivered in ~3 minutes</li>
+            <li>Download as ZIP</li>
+          </ul>
+          <button class="price-btn" onclick="openCheckout('pet-starter')">Get Pet Portraits →</button>
+        </div>
+
+        <!-- Pet Pro -->
+        <div class="price-card popular">
+          <div class="popular-tag">Best Value</div>
+          <div class="price-name">Pet Pro</div>
+          <div class="price-desc">Full costume variety</div>
+          <div class="price-amount">$24 <span>one-time</span></div>
+          <div class="price-per">$0.96 per portrait</div>
+          <ul class="price-features">
+            <li>25 AI pet portraits</li>
+            <li>All 10 costume styles</li>
+            <li>HD resolution (1024×1024)</li>
+            <li>Delivered in ~5 minutes</li>
+            <li>Download as ZIP</li>
+            <li>Priority generation</li>
+          </ul>
+          <button class="price-btn" onclick="openCheckout('pet-pro')">Get Pet Pro →</button>
+        </div>
+
+        <!-- Pet Ultimate -->
+        <div class="price-card">
+          <div class="price-name">Pet Ultimate</div>
+          <div class="price-desc">Maximum cuteness</div>
+          <div class="price-amount">$39 <span>one-time</span></div>
+          <div class="price-per">$0.78 per portrait</div>
+          <ul class="price-features">
+            <li>50 AI pet portraits</li>
+            <li>All 10 costume styles</li>
+            <li>Multiple poses per style</li>
+            <li>HD resolution (1024×1024)</li>
+            <li>Download as ZIP</li>
+            <li>Commercial license</li>
+          </ul>
+          <button class="price-btn" onclick="openCheckout('pet-ultimate')">Get Pet Ultimate →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Print & Ship Upsell -->
+    <section class="section" id="print">
+      <div class="section-label">🖼️ NEW — Print & Ship</div>
+      <h2 class="section-title">Get it printed. Delivered to your door.</h2>
+      <p style="text-align:center;color:var(--text-secondary);max-width:600px;margin:-32px auto 48px;font-size:1rem;line-height:1.6;">Turn your favorite AI headshot or pet portrait into museum-quality wall art. Printed on premium canvas or photo paper, shipped worldwide.</p>
+      <div class="styles-grid" style="max-width:900px;">
+        <div class="style-chip"><span class="style-emoji">📸</span>8×10 Print<br><span style="font-size:0.8rem;color:var(--muted);">from $14.99</span></div>
+        <div class="style-chip"><span class="style-emoji">📸</span>11×14 Print<br><span style="font-size:0.8rem;color:var(--muted);">from $19.99</span></div>
+        <div class="style-chip"><span class="style-emoji">🖼️</span>16×20 Canvas<br><span style="font-size:0.8rem;color:var(--muted);">from $49.99</span></div>
+        <div class="style-chip"><span class="style-emoji">🖼️</span>20×24 Canvas<br><span style="font-size:0.8rem;color:var(--muted);">from $69.99</span></div>
+        <div class="style-chip"><span class="style-emoji">🖼️</span>24×36 Canvas<br><span style="font-size:0.8rem;color:var(--muted);">from $89.99</span></div>
+        <div class="style-chip"><span class="style-emoji">🪟</span>8×10 Framed<br><span style="font-size:0.8rem;color:var(--muted);">from $34.99</span></div>
+        <div class="style-chip"><span class="style-emoji">🪟</span>16×20 Framed<br><span style="font-size:0.8rem;color:var(--muted);">from $59.99</span></div>
+      </div>
+      <p style="text-align:center;color:var(--dim);font-size:0.85rem;margin-top:24px;">Available after generating your headshots. Select your favorite → choose a size → shipped in 3-7 business days.</p>
     </section>
 
     <!-- Use Cases -->
@@ -624,7 +707,19 @@
       starter: { name: 'Starter', price: '$15', headshots: 20 },
       pro: { name: 'Professional', price: '$29', headshots: 50 },
       premium: { name: 'Executive', price: '$49', headshots: 100 },
+      'pet-starter': { name: 'Pet Starter', price: '$12', headshots: 10 },
+      'pet-pro': { name: 'Pet Pro', price: '$24', headshots: 25 },
+      'pet-ultimate': { name: 'Pet Ultimate', price: '$39', headshots: 50 },
     };
+
+    function showTab(tab) {
+      document.getElementById('humanPricing').style.display = tab === 'human' ? 'grid' : 'none';
+      document.getElementById('petPricing').style.display = tab === 'pet' ? 'grid' : 'none';
+      document.getElementById('tabHuman').style.background = tab === 'human' ? 'var(--accent-glow)' : 'transparent';
+      document.getElementById('tabHuman').style.color = tab === 'human' ? 'var(--accent-light)' : 'var(--muted)';
+      document.getElementById('tabPet').style.background = tab === 'pet' ? 'var(--accent-glow)' : 'transparent';
+      document.getElementById('tabPet').style.color = tab === 'pet' ? 'var(--accent-light)' : 'var(--muted)';
+    }
 
     function openCheckout(pkg) {
       selectedPackage = pkg;
