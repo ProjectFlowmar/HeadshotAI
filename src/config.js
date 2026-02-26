@@ -74,9 +74,9 @@ module.exports = {
   
   // Pet packages
   petPackages: {
-    'pet-starter': { name: 'Pet Starter', headshots: 10, styles: ['Pet'], price: 1200, isPet: true },      // $12
-    'pet-pro': { name: 'Pet Pro', headshots: 25, styles: ['Pet'], price: 2400, isPet: true },               // $24  
-    'pet-ultimate': { name: 'Pet Ultimate', headshots: 50, styles: ['Pet'], price: 3900, isPet: true },     // $39
+    'pet-starter': { name: 'Pet Starter', headshots: 20, styles: ['Pet'], price: 1500, isPet: true },      // $15
+    'pet-pro': { name: 'Pet Pro', headshots: 50, styles: ['Pet'], price: 2900, isPet: true },               // $29  
+    'pet-ultimate': { name: 'Pet Ultimate', headshots: 100, styles: ['Pet'], price: 4900, isPet: true },    // $49
   },
   
   // Print products via Prodigi
@@ -95,8 +95,8 @@ module.exports = {
     starter: { name: 'Starter', headshots: 20, styles: ['Corporate', 'LinkedIn'], price: 1500 },
     pro: { name: 'Professional', headshots: 50, styles: ['Corporate', 'LinkedIn', 'Creative', 'Outdoor', 'Agent'], price: 2900 },
     premium: { name: 'Executive', headshots: 100, styles: 'all', price: 4900 },
-    'pet-starter': { name: 'Pet Starter', headshots: 10, styles: ['Pet'], price: 1200, isPet: true },
-    'pet-pro': { name: 'Pet Pro', headshots: 25, styles: ['Pet'], price: 2400, isPet: true },
-    'pet-ultimate': { name: 'Pet Ultimate', headshots: 50, styles: ['Pet'], price: 3900, isPet: true },
+    'pet-starter': { name: 'Pet Starter', headshots: 20, styles: ['Pet'], price: 1500, isPet: true },
+    'pet-pro': { name: 'Pet Pro', headshots: 50, styles: ['Pet'], price: 2900, isPet: true },
+    'pet-ultimate': { name: 'Pet Ultimate', headshots: 100, styles: ['Pet'], price: 4900, isPet: true },
   },
 };
